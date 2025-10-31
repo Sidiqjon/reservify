@@ -11,3 +11,14 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
     await this.$disconnect();
   }
 }
+
+
+
+
+// import { Injectable, OnModuleInit } from '@nestjs/common';
+
+// export class PrismaService extends PrismaClient implements OnModuleInit {
+//   async onModuleInit() {
+//     await this.$connect();
+//   }
+// }

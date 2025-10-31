@@ -8,7 +8,7 @@ import {
 import { BookingsRepository } from '../infrastructure/bookings.repository';
 import { PrismaService } from '../../../core/prisma/prisma.service';
 import { ReserveBookingDto } from '../dto/reserve-booking.dto';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'; // ✅ fix here
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'; 
 import { ListBookingsDto } from '../dto/list-bookings.dto';
 
 
@@ -33,46 +33,43 @@ export class BookingsService {
 
     try {
       const result = await this.prisma.$transaction(async (tx) => {
-        // Lock the event row to avoid race conditions (prevent overbooking)
-        // Note: using parameterized query to avoid SQL injection
+
         await tx.$executeRaw`SELECT id FROM "events" WHERE id = ${eventId} FOR UPDATE`;
 
         const event = await tx.event.findUnique({ where: { id: eventId } });
         if (!event) throw new NotFoundException('Event not found');
 
-        // Count current bookings
         const bookedCount = await tx.booking.count({ where: { eventId } });
 
         if (bookedCount >= event.totalSeats) {
           throw new BadRequestException('No seats available for this event');
         }
 
-        // Check duplicate booking
         const existing = await tx.booking.findFirst({ where: { eventId, userId } });
         if (existing) {
           throw new ConflictException('User already has a booking for this event');
         }
 
-        // Create booking
         const booking = await tx.booking.create({
           data: { eventId, userId },
         });
 
+        await tx.event.update({
+          where: { id: eventId },
+          data: { totalSeats: { decrement: 1 } },
+        });
+
         return booking;
-      }, { maxWait: 5000, timeout: 10000 }); // optional settings
+      }, { maxWait: 5000, timeout: 10000 }); 
 
       return result;
     } catch (err) {
-      // Prisma unique constraint error (double-check)
       if (err instanceof PrismaClientKnownRequestError && err.code === 'P2002') {
-        // unique constraint on (eventId, userId)
         throw new ConflictException('User already has a booking for this event');
       }
-      // If we re-threw an HttpException (NotFound/BadRequest/Conflict), let it bubble up
       if (err instanceof NotFoundException || err instanceof BadRequestException || err instanceof ConflictException) {
         throw err;
       }
-      // Unexpected
       throw new InternalServerErrorException('Failed to reserve booking');
     }
   }
@@ -104,7 +101,7 @@ export class BookingsService {
   }
 
   async remove(id: number) {
-    // ensure booking exists
+    
     const booking = await this.bookingsRepo.findById(id);
     if (!booking) throw new NotFoundException('Booking not found');
 

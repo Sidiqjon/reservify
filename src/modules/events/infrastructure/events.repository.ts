@@ -25,7 +25,7 @@ export class EventsRepository {
       ? {
           name: {
             contains: params.search,
-            mode: Prisma.QueryMode.insensitive, // ✅ use enum, not string
+            mode: Prisma.QueryMode.insensitive, 
           },
         }
       : {};

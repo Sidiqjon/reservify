@@ -5,7 +5,6 @@ import { PrismaService } from '../../../core/prisma/prisma.service';
 export class BookingsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  // Create a booking within a provided transaction client (tx) or default prisma
   async create(txClient: any, data: { eventId: number; userId: string }) {
     const client = txClient ?? this.prisma;
     return client.booking.create({

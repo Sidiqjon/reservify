@@ -2,14 +2,12 @@ import { Injectable, NotFoundException, BadRequestException } from '@nestjs/comm
 import { EventsRepository } from '../infrastructure/events.repository';
 import { CreateEventDto } from '../dto/create-event.dto';
 import { UpdateEventDto } from '../dto/update-event.dto';
-import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class EventsService {
   constructor(private readonly eventsRepo: EventsRepository) {}
 
   async create(dto: CreateEventDto) {
-    // business rule: totalSeats must be integer >= 0 (validated in DTO)
     const created = await this.eventsRepo.create({
       name: dto.name.trim(),
       totalSeats: dto.totalSeats,
@@ -48,34 +46,38 @@ export class EventsService {
   }
 
   async update(id: number, dto: UpdateEventDto) {
-    // ensure event exists
-    const event = await this.eventsRepo.findById(id);
-    if (!event) throw new NotFoundException('Event not found');
+  const event = await this.eventsRepo.findById(id);
+  if (!event) throw new NotFoundException('Event not found');
 
-    // if trying to reduce totalSeats, ensure it is not less than already booked seats
-    if (dto.totalSeats !== undefined) {
-      const booked = await this.eventsRepo.countBookingsForEvent(id);
-      if (dto.totalSeats < booked) {
-        throw new BadRequestException(
-          `Cannot set totalSeats to ${dto.totalSeats} because ${booked} seats are already booked`,
-        );
-      }
+  if (dto.name !== undefined) {
+    const trimmedName = dto.name.trim();
+    if (trimmedName === '') {
+      throw new BadRequestException('Event name cannot be empty');
     }
-
-    const updated = await this.eventsRepo.update(id, {
-      name: dto.name !== undefined ? dto.name.trim() : undefined,
-      totalSeats: dto.totalSeats,
-    });
-
-    return updated;
   }
 
+  if (dto.totalSeats !== undefined) {
+    const booked = await this.eventsRepo.countBookingsForEvent(id);
+    if (dto.totalSeats < booked) {
+      throw new BadRequestException(
+        `Cannot set totalSeats to ${dto.totalSeats} because ${booked} seats are already booked`,
+      );
+    }
+  }
+
+  const updated = await this.eventsRepo.update(id, {
+    name: dto.name !== undefined ? dto.name.trim() : event.name,
+    totalSeats: dto.totalSeats !== undefined ? dto.totalSeats : event.totalSeats,
+  });
+
+  return updated;
+}
+
   async remove(id: number) {
-    // ensure event exists
+
     const event = await this.eventsRepo.findById(id);
     if (!event) throw new NotFoundException('Event not found');
 
-    // Removing will cascade bookings (as per Prisma schema)
     await this.eventsRepo.remove(id);
     return { success: true };
   }
