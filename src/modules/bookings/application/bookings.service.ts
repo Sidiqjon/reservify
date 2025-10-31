@@ -19,14 +19,6 @@ export class BookingsService {
     private readonly prisma: PrismaService,
   ) {}
 
-  /**
-   * Reserve a booking with concurrency-safety:
-   * - start an interactive tx
-   * - lock event row (SELECT FOR UPDATE)
-   * - check event existence and seats
-   * - check duplicate booking (optional double-check)
-   * - create booking
-   */
   async reserve(dto: ReserveBookingDto) {
     const eventId = dto.event_id;
     const userId = dto.user_id.trim();
@@ -54,15 +46,11 @@ export class BookingsService {
           data: { eventId, userId },
         });
 
-        await tx.event.update({
-          where: { id: eventId },
-          data: { totalSeats: { decrement: 1 } },
-        });
-
         return booking;
       }, { maxWait: 5000, timeout: 10000 }); 
 
       return result;
+
     } catch (err) {
       if (err instanceof PrismaClientKnownRequestError && err.code === 'P2002') {
         throw new ConflictException('User already has a booking for this event');
@@ -101,11 +89,9 @@ export class BookingsService {
   }
 
   async remove(id: number) {
-    
     const booking = await this.bookingsRepo.findById(id);
     if (!booking) throw new NotFoundException('Booking not found');
-
     await this.bookingsRepo.remove(id);
-    return { success: true };
+    return booking;
   }
 }

@@ -46,39 +46,37 @@ export class EventsService {
   }
 
   async update(id: number, dto: UpdateEventDto) {
-  const event = await this.eventsRepo.findById(id);
-  if (!event) throw new NotFoundException('Event not found');
-
-  if (dto.name !== undefined) {
-    const trimmedName = dto.name.trim();
-    if (trimmedName === '') {
-      throw new BadRequestException('Event name cannot be empty');
-    }
-  }
-
-  if (dto.totalSeats !== undefined) {
-    const booked = await this.eventsRepo.countBookingsForEvent(id);
-    if (dto.totalSeats < booked) {
-      throw new BadRequestException(
-        `Cannot set totalSeats to ${dto.totalSeats} because ${booked} seats are already booked`,
-      );
-    }
-  }
-
-  const updated = await this.eventsRepo.update(id, {
-    name: dto.name !== undefined ? dto.name.trim() : event.name,
-    totalSeats: dto.totalSeats !== undefined ? dto.totalSeats : event.totalSeats,
-  });
-
-  return updated;
-}
-
-  async remove(id: number) {
-
     const event = await this.eventsRepo.findById(id);
     if (!event) throw new NotFoundException('Event not found');
 
+    if (dto.name !== undefined) {
+      const trimmedName = dto.name.trim();
+      if (trimmedName === '') {
+        throw new BadRequestException('Event name cannot be empty');
+      }
+    }
+
+    if (dto.totalSeats !== undefined) {
+      const booked = await this.eventsRepo.countBookingsForEvent(id);
+      if (dto.totalSeats < booked) {
+        throw new BadRequestException(
+          `Cannot set totalSeats to ${dto.totalSeats} because ${booked > 1 ? 'there are' : 'there is'} ${booked} booking(s) for this event`,
+        );
+      }
+    }
+
+    const updated = await this.eventsRepo.update(id, {
+      name: dto.name !== undefined ? dto.name.trim() : event.name,
+      totalSeats: dto.totalSeats !== undefined ? dto.totalSeats : event.totalSeats,
+    });
+
+    return updated;
+  }
+
+  async remove(id: number) {
+    const event = await this.eventsRepo.findById(id);
+    if (!event) throw new NotFoundException('Event not found');
     await this.eventsRepo.remove(id);
-    return { success: true };
+    return event;
   }
 }

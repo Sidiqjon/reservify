@@ -12,6 +12,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { BookingsService } from '../application/bookings.service';
 import { ReserveBookingDto } from '../dto/reserve-booking.dto';
 import { ListBookingsDto } from '../dto/list-bookings.dto';
+import { formatResponse } from 'src/core/utils';
 
 @ApiTags('bookings')
 @Controller('api/bookings')
@@ -25,27 +26,34 @@ export class BookingsController {
   @ApiResponse({ status: 404, description: 'Event not found' })
   @ApiResponse({ status: 409, description: 'Duplicate booking' })
   async reserve(@Body() dto: ReserveBookingDto) {
-    const booking = await this.bookingsService.reserve(dto);
-    return booking;
+    const result = await this.bookingsService.reserve(dto);
+    return formatResponse(result, 'Booking created successfully');
   }
 
   @Get()
   @ApiOperation({ summary: 'List bookings with filters and pagination' })
   async list(@Query() query: ListBookingsDto) {
-    return this.bookingsService.findAll(query);
+    const result = await this.bookingsService.findAll(query);
+    return {
+      success: true,
+      message: 'Bookings retrieved successfully',
+      ...result,
+    };
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get booking by id' })
   @ApiParam({ name: 'id', description: 'Booking id', example: 1 })
   async getOne(@Param('id', ParseIntPipe) id: number) {
-    return this.bookingsService.findOne(id);
+    const result = await this.bookingsService.findOne(id);
+    return formatResponse(result, 'Booking retrieved successfully');
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete booking by id' })
   @ApiParam({ name: 'id', description: 'Booking id', example: 1 })
   async remove(@Param('id', ParseIntPipe) id: number) {
-    return this.bookingsService.remove(id);
+    const result = await this.bookingsService.remove(id);
+    return formatResponse(result, 'Booking deleted successfully');
   }
 }
