@@ -12,7 +12,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { BookingsService } from '../application/bookings.service';
 import { ReserveBookingDto } from '../dto/reserve-booking.dto';
 import { ListBookingsDto } from '../dto/list-bookings.dto';
-import { formatResponse } from 'src/core/utils';
+import { formatResponse } from '../../../core/utils';
 
 @ApiTags('bookings')
 @Controller('api/bookings')

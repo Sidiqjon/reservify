@@ -14,7 +14,7 @@ import { EventsService } from '../application/events.service';
 import { CreateEventDto } from '../dto/create-event.dto';
 import { UpdateEventDto } from '../dto/update-event.dto';
 import { ListEventsDto } from '../dto/list-events.dto';
-import { formatResponse } from 'src/core/utils';
+import { formatResponse } from '../../../core/utils';
 
 @ApiTags('events')
 @Controller('api/events')
