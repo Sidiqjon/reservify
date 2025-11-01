@@ -1,98 +1,204 @@
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
+  <a href="http://3.76.216.99:3333/api/docs#/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
+<p align="center">
+  <b>Reservify</b> — Event Seat Reservation API built with <a href="https://nestjs.com/" target="_blank">NestJS</a>, <a href="https://www.prisma.io/" target="_blank">Prisma</a>, and <a href="https://www.postgresql.org/" target="_blank">PostgreSQL</a>.
 </p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
+<p align="center">
+  <a href="https://nodejs.org/en" target="_blank"><img src="https://img.shields.io/badge/Node.js-20-green" alt="Node.js 20" /></a>
+  <a href="https://nestjs.com/" target="_blank"><img src="https://img.shields.io/badge/NestJS-Framework-red" alt="NestJS" /></a>
+  <a href="https://www.prisma.io/" target="_blank"><img src="https://img.shields.io/badge/ORM-Prisma-blue" alt="Prisma ORM" /></a>
+  <a href="https://www.postgresql.org/" target="_blank"><img src="https://img.shields.io/badge/Database-PostgreSQL-blueviolet" alt="PostgreSQL" /></a>
+  <a href="https://jestjs.io/" target="_blank"><img src="https://img.shields.io/badge/Tests-Jest-yellow" alt="Jest" /></a>
+</p>
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+---
 
-## Project setup
+## 📘 Live API Documentation
 
-```bash
-$ npm install
+**Production URL:** [http://3.76.216.99:3333/api/docs#/](http://3.76.216.99:3333/api/docs#/)
+
+---
+
+## 📖 Description
+
+**Reservify** is a clean, modular backend for managing **events and seat reservations**.  
+It follows **Domain-Driven Design (DDD)** principles with full CRUD APIs, validation, and end-to-end tests.  
+The project is automatically deployed to **AWS Lightsail** via **GitHub Actions CI/CD pipeline**.
+
+---
+
+## ⚙️ Tech Stack
+
+- **NestJS** — modular backend framework
+- **Prisma ORM** — PostgreSQL schema & migrations
+- **PostgreSQL** — relational database
+- **Swagger** — auto-generated API documentation
+- **Jest + Supertest** — for end-to-end testing
+- **PM2** — process manager for production
+- **GitHub Actions** — CI/CD pipeline to AWS Lightsail
+
+---
+
+## 🏗️ Features
+
+- Complete Event CRUD operations
+- Booking system with seat limits
+- Prevents duplicate seat reservations
+- DTO validation via `class-validator`
+- Global error filters and unified response structure
+- Auto-generated Swagger API docs
+- Dedicated test database for E2E tests
+
+---
+
+## 🧩 Project Structure
+
+```
+src/
+├── core/                # shared modules (PrismaService, filters, interceptors)
+├── modules/
+│   ├── events/          # event module (controller, service, DTOs)
+│   └── bookings/        # booking module (controller, service, DTOs)
+prisma/
+├── schema.prisma        # database schema
+└── migrations/          # migration files
+test/
+└── app.e2e-spec.ts      # end-to-end tests
 ```
 
-## Compile and run the project
+---
+
+## 🚀 Getting Started
+
+### Installation
+
+```bash
+npm install
+```
+
+### Running the App
 
 ```bash
 # development
-$ npm run start
+npm run start:dev
 
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+# production
+npm run start:prod
 ```
 
-## Run tests
+### Environment Setup
+
+Create a `.env` file:
+
+```env
+DATABASE_URL="postgresql://postgres:12345678@localhost:5432/reservify?schema=public"
+PORT=3333
+```
+
+Initialize database:
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npx prisma migrate dev
+npx prisma generate
 ```
 
-## Deployment
+---
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## 🧪 Testing (Local Only)
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+Reservify uses a dedicated test database to isolate test data.
+
+Create `.env.test`:
+
+```env
+DATABASE_URL="postgresql://postgres:12345678@localhost:5432/reservify_test?schema=public"
+NODE_ENV=test
+PORT=4000
+```
+
+Run end-to-end tests:
 
 ```bash
-$ npm install -g mau
-$ mau deploy
+npm run test:e2e
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+---
 
-## Resources
+## 🚢 Deployment (CI/CD)
 
-Check out a few resources that may come in handy when working with NestJS:
+Reservify uses **GitHub Actions** for continuous integration and deployment to **AWS Lightsail**.
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+The pipeline performs:
 
-## Support
+- Install dependencies and build the project
+- Copy build files to AWS Lightsail via SSH
+- Run migrations and restart with PM2
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Production server setup:
 
-## Stay in touch
+```bash
+npm install --omit=dev
+npx prisma migrate deploy
+pm2 restart ecosystem.config.js
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+---
 
-## License
+## 🧹 Reset Database (Server)
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+To safely reset production data (e.g., clear test bookings):
+
+```bash
+npx prisma migrate reset
+```
+
+Or run a custom cleanup script:
+
+```bash
+npx ts-node prisma/cleanup.ts
+```
+
+---
+
+## 📜 API Endpoints
+
+### 🎟️ Events
+
+| Method | Endpoint           | Description      |
+|--------|--------------------|------------------|
+| POST   | /api/events        | Create event     |
+| GET    | /api/events        | List all events  |
+| GET    | /api/events/:id    | Get event by ID  |
+| PATCH  | /api/events/:id    | Update event     |
+| DELETE | /api/events/:id    | Delete event     |
+
+### 💺 Bookings
+
+| Method | Endpoint               | Description       |
+|--------|------------------------|-------------------|
+| POST   | /api/bookings/reserve  | Create booking    |
+| GET    | /api/bookings          | List all bookings |
+| GET    | /api/bookings/:id      | Get booking by ID |
+| DELETE | /api/bookings/:id      | Delete booking    |
+
+---
+
+## 👤 Author
+
+**Sidiqjon Yusufjanov**
+
+**Reservify** — Event Seat Reservation API  
+Deployed API: [http://3.76.216.99:3333/api/docs#/](http://3.76.216.99:3333/api/docs#/)
+
+---
+
+## 🪪 License
+
+This project is **MIT Licensed** — free to use, modify, and distribute.
+
+---
+
+<p align="center"><b>"A clean, modular, and testable NestJS backend — built with production in mind."</b></p>
